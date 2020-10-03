@@ -1,7 +1,11 @@
 package com.app.twitter_fetch.model.filter_json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties
 public class FilterMetaDataSent {
     private String sent;
+    private Summary summary;
 
     public FilterMetaDataSent() {
         super();

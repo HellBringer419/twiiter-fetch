@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.app.twitter_fetch.model.Tweet;
 import com.app.twitter_fetch.model.filter_json.Filter;
-import com.app.twitter_fetch.model.filter_json.FilterData;
+import com.app.twitter_fetch.model.filter_json.SenderAddFilter;
+import com.app.twitter_fetch.model.filter_json.SenderDeleteFilter;
 import com.app.twitter_fetch.service.TwitterFetchServices;
 import com.fasterxml.jackson.databind.MappingIterator;
 
@@ -53,14 +54,19 @@ public class TwitterFetchController {
     }
     // @GetMapping("/test")
     // Tweet check() {
-    //     return services.getTweet();
+    //     return services.getTestTweet();
     // }
 
     // Create (add) filter
-    // @PostMapping("/add_filter")
-    // FilterData addFilter(@RequestBody FilterData data) {
-    //     return services.addFilter(data);
-    // }
+    @PostMapping("/add_filter")
+    Boolean addFilter(@RequestBody SenderAddFilter data) {
+        return services.addFilter(data);
+    }
+
+    @PostMapping("/delete_filter")
+    Boolean removeFilter(@RequestBody SenderDeleteFilter data) {
+        return services.deleteFilter(data);
+    }
 
     @PostMapping("capture_filter")
     Filter captureFilter(@RequestBody Filter filter) {
