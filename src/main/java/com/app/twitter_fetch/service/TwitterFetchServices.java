@@ -1,11 +1,21 @@
 package com.app.twitter_fetch.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Stack;
 
 import com.app.twitter_fetch.model.Tweet;
 import com.app.twitter_fetch.model.filter_json.Filter;
 import com.app.twitter_fetch.model.filter_json.FilterData;
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -16,8 +26,11 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class TwitterFetchServices {
-    
-    public Tweet getTweet() {
+    InputStream inputStream;
+    MappingIterator<Tweet> tweetIterator = null;
+    Boolean isOpen;
+
+    public Tweet getTestTweet() {
         Tweet tweet = null;
         try {
             HttpEntity entity = RESTHelper.getHeaders();
@@ -26,8 +39,7 @@ public class TwitterFetchServices {
             String url = "https://api.twitter.com/2/tweets/20";
             ResponseEntity<Tweet> response = restTemplate.exchange(url, HttpMethod.GET, entity, Tweet.class, 1);
             return response.getBody();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -49,41 +61,48 @@ public class TwitterFetchServices {
                     filters.add(filter);
                 }
                 return filters;
-            }
-            else {
+            } else {
                 return filters;
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-		return filters;
-	}
-
-    public List<Tweet> getAllTweetsMatchingFilters() {
-        List<Tweet> tweets = null;
-        try {
-            HttpEntity entity = RESTHelper.getHeaders();
-            RestTemplate restTemplate = new RestTemplate();
-
-            String url = "https://api.twitter.com/2/tweets/search/stream";
-            ResponseEntity<Tweet[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, Tweet[].class, 1);
-
-            System.out.println(response.getBody());
-            // if (response.getStatusCode() == HttpStatus.OK) {
-            //     for (Tweet tweet : response.getBody()) {
-            //         tweets.add(tweet);
-            //     }
-            //     return tweets;
-            // } else {
-            //     return tweets;
-            // }
-            return null;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return tweets;
+        return filters;
     }
+
+    public MappingIterator<Tweet> getIteratorForTweetsMatchingFilters() {
+        try {
+            URLConnection connection = new URL("https://api.twitter.com/2/tweets/search/stream").openConnection();
+            connection.setRequestProperty("Authorization",
+                    "Bearer AAAAAAAAAAAAAAAAAAAAAG9zIAEAAAAAYAX%2BDKaXrLwnPuUrzdAqo9FLY7E%3Dzn7GnSRVgkzDaZZJwjXDMEZ24zPYdlLldUTE8TdWSjLKVcmzWq");
+            connection.setDoOutput(true);
+            inputStream = connection.getInputStream();
+            ObjectMapper mapper = new ObjectMapper();
+
+            isOpen = true;
+
+            tweetIterator = mapper.readerFor(Tweet.class).readValues(inputStream);
+            // while (isOpen && i.hasNextValue()) {
+            //     Tweet tweet = i.nextValue();
+            //     // CAREFUL ... tweets.add(tweet);
+            // }
+
+            return tweetIterator;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tweetIterator;
+    }
+
+    public void stopTweets() {
+        isOpen = false;
+        try {
+            tweetIterator.close();
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
 
     // public FilterData addFilter(FilterData data) {
     //     FilterData filterData = null;

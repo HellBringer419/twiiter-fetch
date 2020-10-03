@@ -2,11 +2,14 @@ package com.app.twitter_fetch.model;
 
 import com.app.twitter_fetch.model.filter_json.Filter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TweetData {
-    private Integer id;
+    private Long id;
     private String text;
+
+    @JsonProperty("matching_rules")
     private Filter[] matchingRules;
 
     public TweetData() {
@@ -29,11 +32,11 @@ public class TweetData {
         this.text = text;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
