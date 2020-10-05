@@ -52,10 +52,11 @@ public class TwitterFetchController {
     void stopTweets() {
         services.stopTweets();
     }
-    // @GetMapping("/test")
-    // Tweet check() {
-    //     return services.getTestTweet();
-    // }
+
+    @GetMapping("/test")
+    Tweet check() {
+        return services.getTestTweet();
+    }
 
     // Create (add) filter
     @PostMapping("/add_filter")

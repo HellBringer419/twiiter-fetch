@@ -34,7 +34,13 @@ public class TwitterFetchServices {
     public Tweet getTestTweet() {
         Tweet tweet = null;
         try {
-            HttpEntity entity = RESTHelper.getHeaders();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+            headers.set("Authorization", RESTHelper.getBearerToken());
+
+            HttpEntity entity = new HttpEntity(headers);
             RestTemplate restTemplate = new RestTemplate();
 
             String url = "https://api.twitter.com/2/tweets/20";
@@ -50,7 +56,13 @@ public class TwitterFetchServices {
     public List<Filter> getAllFilters() {
         List<Filter> filters = new ArrayList<>();
         try {
-            HttpEntity entity = RESTHelper.getHeaders();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+            headers.set("Authorization", RESTHelper.getBearerToken());
+
+            HttpEntity entity = new HttpEntity(headers);
             RestTemplate restTemplate = new RestTemplate();
 
             String url = "https://api.twitter.com/2/tweets/search/stream/rules";
@@ -74,8 +86,7 @@ public class TwitterFetchServices {
     public MappingIterator<Tweet> getIteratorForTweetsMatchingFilters() {
         try {
             URLConnection connection = new URL("https://api.twitter.com/2/tweets/search/stream").openConnection();
-            connection.setRequestProperty("Authorization",
-                    "Bearer AAAAAAAAAAAAAAAAAAAAAG9zIAEAAAAAYAX%2BDKaXrLwnPuUrzdAqo9FLY7E%3Dzn7GnSRVgkzDaZZJwjXDMEZ24zPYdlLldUTE8TdWSjLKVcmzWq");
+            connection.setRequestProperty("Authorization", RESTHelper.getBearerToken());
             connection.setDoOutput(true);
             inputStream = connection.getInputStream();
             ObjectMapper mapper = new ObjectMapper();
@@ -111,8 +122,7 @@ public class TwitterFetchServices {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            headers.set("Authorization",
-                    "Bearer AAAAAAAAAAAAAAAAAAAAAG9zIAEAAAAAYAX%2BDKaXrLwnPuUrzdAqo9FLY7E%3Dzn7GnSRVgkzDaZZJwjXDMEZ24zPYdlLldUTE8TdWSjLKVcmzWq");
+            headers.set("Authorization", RESTHelper.getBearerToken());
 
             
             HttpEntity entity = new HttpEntity<>(data, headers);
@@ -139,8 +149,7 @@ public class TwitterFetchServices {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            headers.set("Authorization",
-                    "Bearer AAAAAAAAAAAAAAAAAAAAAG9zIAEAAAAAYAX%2BDKaXrLwnPuUrzdAqo9FLY7E%3Dzn7GnSRVgkzDaZZJwjXDMEZ24zPYdlLldUTE8TdWSjLKVcmzWq");
+            headers.set("Authorization", RESTHelper.getBearerToken());
 
             HttpEntity entity = new HttpEntity<>(data, headers);
 

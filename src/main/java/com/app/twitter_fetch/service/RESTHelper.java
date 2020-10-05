@@ -1,24 +1,19 @@
 package com.app.twitter_fetch.service;
 
 import java.util.Collections;
+import java.util.ResourceBundle;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 public class RESTHelper {
-    public static HttpEntity getHeaders() {
-        
+    
+    public static String getBearerToken() {
+        ResourceBundle bundle = ResourceBundle.getBundle("application");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        String bearerToken = bundle.getString("twitter.bearer_token");
 
-        headers.set("Authorization",
-                "Bearer AAAAAAAAAAAAAAAAAAAAAG9zIAEAAAAAYAX%2BDKaXrLwnPuUrzdAqo9FLY7E%3Dzn7GnSRVgkzDaZZJwjXDMEZ24zPYdlLldUTE8TdWSjLKVcmzWq");
-
-        HttpEntity entity = new HttpEntity(headers);
-
-        return entity;
+        return "Bearer " + bearerToken;
     }
 }
