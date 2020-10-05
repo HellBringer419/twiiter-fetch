@@ -38,7 +38,7 @@ To install this application locally:
 
 ## Configuration
 
-* Change the variable ``` ${bearer_token} ``` inside "./src/main/resources/application.properties" to your own Twitter Bearer Token.
+* Change the variable ``` ${TWITTER_BEARER_TOKEN} ``` inside "./src/main/resources/application.properties" to your own Twitter Bearer Token.
 * The default java version is 11. To change, open "pom.xml" and change the value of ``` <project> <properties> <java.version>``` to your required version.
 * The default node version is 12.8. To change, open "pom.xml" and change the value of ``` <project> <build> <plugins> <plugin> <version> <configuration> <nodeVersion> ``` to your required version.
 
