@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.app</groupId>
 	<artifactId>twitter_fetch</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>twitter_fetch</name>
 	<description>Develop a Java/Kotlin Spring Boot application to fetch all the tweets from Twitter</description>
 
@@ -20,7 +20,7 @@
 	<dependencies>
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		>		<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency> -->
 		<!-- <dependency>
 			<groupId>org.springframework.boot</groupId>
