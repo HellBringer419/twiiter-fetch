@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.app</groupId>
 	<artifactId>twitter_fetch</artifactId>
-	<version>0.0.2</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 	<name>twitter_fetch</name>
 	<description>Develop a Java/Kotlin Spring Boot application to fetch all the tweets from Twitter</description>
