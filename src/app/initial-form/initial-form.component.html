@@ -1,0 +1,39 @@
+<h2> Enter your Filters </h2>
+<form (ngSubmit)="submitForm()">
+
+    <div class="form-group">
+        <label for="followerInput"> Followers </label> <br />
+        <div class="input-group">
+            <input type="text" name="followerInput" [(ngModel)]="followerInput" class="form-control" />
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-primary" (click)="addFollowerFilter(followerInput)"> Add More </button>
+            </div>
+        </div>
+        <div>
+            <ul>
+                <li *ngFor="let filter of filters">
+                    <span *ngIf="filter.type == 0"> {{filter.name}} </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="keywordInput"> Keywords </label> <br />
+        <div class="input-group">
+            <input type="text" name="keywordInput" [(ngModel)]="keywordInput" class="form-control" />
+            <div class="input-group-append">
+                <button type="button" class="btn btn-outline-primary" (click)="addKeywordFilter(keywordInput)"> Add More </button>
+            </div>
+        </div>
+        <div>
+            <ul>
+                <li *ngFor="let filter of filters">
+                    <span *ngIf="filter.type == 1"> {{filter.name}} </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Submit" />
+</form>
