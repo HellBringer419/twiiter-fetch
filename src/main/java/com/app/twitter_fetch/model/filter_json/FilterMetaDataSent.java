@@ -19,6 +19,14 @@ public class FilterMetaDataSent {
         this.sent = sent;
     }
 
+    public Summary getSummary() {
+        return summary;
+    }
+
+    public void setSummary(Summary summary) {
+        this.summary = summary;
+    }
+
     @Override
     public String toString() {
         String output = "MetaDataSent: { sent = " + sent + '}';

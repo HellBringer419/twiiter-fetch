@@ -10,13 +10,22 @@
             </div>
         </div>
         <div>
-            <ul>
-                <li *ngFor="let filter of filters">
-                    <span *ngIf="filter.type == 0"> {{filter.name}} </span>
+            <ul class="list-group">
+                <li class="list-group-item" *ngFor="let filter of followerFilters">
+                    <div class="row">
+                        <span class="col-11"> {{filter.value}} </span>
+                        <div class="col-1">
+                            <button type="button" class="close" aria-label="Close" (click)="removeFilter(filter)">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
     </div>
+
+    <br />
 
     <div class="form-group">
         <label for="keywordInput"> Keywords </label> <br />
@@ -27,9 +36,16 @@
             </div>
         </div>
         <div>
-            <ul>
-                <li *ngFor="let filter of filters">
-                    <span *ngIf="filter.type == 1"> {{filter.name}} </span>
+            <ul class="list-group">
+                <li class="list-group-item" *ngFor="let filter of keywordFilters">
+                    <div class="row">
+                        <span class="col-11"> {{filter.value}} </span>
+                        <div class="col-1">
+                            <button type="button" class="close" aria-label="Close" (click)="removeFilter(filter)">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </div>
