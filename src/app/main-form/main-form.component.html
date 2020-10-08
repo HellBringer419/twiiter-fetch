@@ -1,1 +1,28 @@
-<p>main-form works!</p>
+<h2> Add more filters </h2>
+<div class="row  justify-content-md-center">
+    <input type="text" name="new-filter" placeholder="Add Filter Keyword" class="col" />
+    <!-- <div class="col-md-auto"> -->
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Dropdown button
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+        </div>
+    <div class="col col-lg-2">
+        <button type="button" class="btn btn-primary"> Add this </button>
+    </div>
+</div>
+<br />
+<br />
+<h3> Tweets Matching Filters </h3>
+<br />
+<ul>
+    <li *ngFor="let tweet of tweets">
+        <span> {{tweet.text}} </span>
+    </li>
+</ul>
