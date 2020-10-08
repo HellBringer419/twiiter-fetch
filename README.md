@@ -38,7 +38,10 @@ To install this application locally:
 
 ## Configuration
 
-* Change the variable ``` ${TWITTER_BEARER_TOKEN} ``` inside "./src/main/resources/application.properties" to your own Twitter Bearer Token.
+* Create a ".env" file in the root directory. You can use the ".env.sample" for guidance. Change the value of the variable ``` TWITTER_BEARER_TOKEN ``` inside "./.env" to your own Twitter Bearer Token. When you first run the appication, you need to source this file with:
+    ``` bash
+    $ source ./.env
+    ```
 * The default java version is 11. To change, open "pom.xml" and change the value of ``` <project> <properties> <java.version>``` to your required version.
 * The default node version is 12.8. To change, open "pom.xml" and change the value of ``` <project> <build> <plugins> <plugin> <version> <configuration> <nodeVersion> ``` to your required version.
 
@@ -46,7 +49,8 @@ To install this application locally:
 
 This app is developed between the following constraints:
 * Integrate with twitter API. (Eg. Filter Realtime Tweets API ​ OR​ Filtered Stream API of Twitter)
-        a. https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/api-reference/post-statuses-filter*      b. https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/api-reference
+        a. https://developer.twitter.com/en/docs/twitter-api/v1/tweets/filter-realtime/api-reference/post-statuses-filter      
+        b. https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/api-reference
 * Store the tweets in the database and show the tweets on a webpage.
 * Do NOT use any existing feature/capability libraries for integrating with twitter (eg., twitter4j).
 * You can use any HTTP library to fetch the data.

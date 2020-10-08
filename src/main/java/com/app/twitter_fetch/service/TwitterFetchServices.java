@@ -38,7 +38,7 @@ public class TwitterFetchServices {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            headers.set("Authorization", RESTHelper.getBearerToken());
+            headers.set("Authorization", APIHelper.getBearerToken());
 
             HttpEntity entity = new HttpEntity(headers);
             RestTemplate restTemplate = new RestTemplate();
@@ -60,7 +60,7 @@ public class TwitterFetchServices {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            headers.set("Authorization", RESTHelper.getBearerToken());
+            headers.set("Authorization", APIHelper.getBearerToken());
 
             HttpEntity entity = new HttpEntity(headers);
             RestTemplate restTemplate = new RestTemplate();
@@ -86,7 +86,7 @@ public class TwitterFetchServices {
     public MappingIterator<Tweet> getIteratorForTweetsMatchingFilters() {
         try {
             URLConnection connection = new URL("https://api.twitter.com/2/tweets/search/stream").openConnection();
-            connection.setRequestProperty("Authorization", RESTHelper.getBearerToken());
+            connection.setRequestProperty("Authorization", APIHelper.getBearerToken());
             connection.setDoOutput(true);
             inputStream = connection.getInputStream();
             ObjectMapper mapper = new ObjectMapper();
@@ -122,7 +122,7 @@ public class TwitterFetchServices {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            headers.set("Authorization", RESTHelper.getBearerToken());
+            headers.set("Authorization", APIHelper.getBearerToken());
 
             
             HttpEntity entity = new HttpEntity<>(data, headers);
@@ -149,7 +149,7 @@ public class TwitterFetchServices {
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            headers.set("Authorization", RESTHelper.getBearerToken());
+            headers.set("Authorization", APIHelper.getBearerToken());
 
             HttpEntity entity = new HttpEntity<>(data, headers);
 
