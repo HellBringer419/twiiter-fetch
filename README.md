@@ -12,7 +12,8 @@ On submitting, the app should start streaming tweets for the conditions configur
 This app requires the following
 * Java (atleast jdk 8)
 * Maven (mvn) or spring cli-tool
-* Node (would be installed by maven)
+* Node (would be installed by Maven)
+* Angular (would be installed by Node)
 
 ## Installation
 
@@ -38,7 +39,8 @@ To install this application locally:
 
 ## Configuration
 
-* Create a ".env" file in the root directory. You can use the ".env.sample" for guidance. Change the value of the variable ``` TWITTER_BEARER_TOKEN ``` inside "./.env" to your own Twitter Bearer Token. When you first run the appication, you need to source this file with:
+* Create a ".env" file in the root directory. You can use the ".env.sample" for guidance. Change the value of the variable ``` TWITTER_BEARER_TOKEN ``` inside "./.env" to your own Twitter Bearer Token. 
+When you first run the appication, you need to source this file with:
     ``` bash
     $ source ./.env
     ```

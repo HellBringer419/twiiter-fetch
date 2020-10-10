@@ -1,17 +1,17 @@
 package com.app.twitter_fetch.model.filter_json;
 
 public class Delete {
-    private Long[] ids;
+    private String[] ids;
 
     public Delete() {
         super();
     }
 
-    public Long[] getIds() {
+    public String[] getIds() {
         return ids;
     }
 
-    public void setIds(Long[] ids) {
+    public void setIds(String[] ids) {
         this.ids = ids;
     }
 }

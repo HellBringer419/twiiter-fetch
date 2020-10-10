@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import com.app.twitter_fetch.model.Tweet;
 import com.app.twitter_fetch.model.filter_json.Filter;
@@ -53,8 +51,7 @@ public class TwitterFetchServices {
         return tweet;
     }
 
-    public List<Filter> getAllFilters() {
-        List<Filter> filters = new ArrayList<>();
+    public Filter[] getAllFilters() {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -70,17 +67,14 @@ public class TwitterFetchServices {
                     1);
 
             if (response.getStatusCode() == HttpStatus.OK) {
-                for (Filter filter : response.getBody().getData()) {
-                    filters.add(filter);
-                }
-                return filters;
+                return response.getBody().getData();
             } else {
-                return filters;
+                return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return filters;
+        return null;
     }
 
     public MappingIterator<Tweet> getIteratorForTweetsMatchingFilters() {
@@ -159,7 +153,6 @@ public class TwitterFetchServices {
             ResponseEntity<FilterData> response = restTemplate.exchange(url, HttpMethod.POST, entity, FilterData.class,
                     1);
             if (response.getStatusCode() == HttpStatus.OK) {
-                System.out.println(response.getBody());
                 return true;
             } else {
                 return false;

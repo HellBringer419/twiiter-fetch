@@ -1,3 +1,3 @@
 export interface Delete {
-    ids: number[];
+    ids: string[];
 }

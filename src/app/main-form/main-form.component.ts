@@ -12,7 +12,7 @@ export class MainFormComponent implements OnInit {
   tweets: Tweet[] = [];
 
   constructor(private http: HttpClient) {
-    http.get("/tweets").subscribe(response => this.tweets.push(response['data']));
+    // http.get("/tweets").subscribe(response => this.tweets.push(response['data']));
   }
 
   ngOnInit(): void {

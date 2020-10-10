@@ -1,7 +1,5 @@
 package com.app.twitter_fetch.controller;
 
-import java.util.List;
-
 import com.app.twitter_fetch.model.Tweet;
 import com.app.twitter_fetch.model.filter_json.Filter;
 import com.app.twitter_fetch.model.filter_json.SenderAddFilter;
@@ -21,16 +19,9 @@ public class TwitterFetchController {
     private TwitterFetchServices services = null;
 
     MappingIterator<Tweet> tweetIterator = null;
-    // @RequestMapping("/test")
-    // public String check(Model model) {
-    //     Tweet tweet = services.getTweet();
-    //     model.addAttribute(tweet);
-
-    //     return "test";
-    // }
-
+    
     @GetMapping("/filters")
-    List<Filter> allFilters() {
+    Filter[] allFilters() {
         return services.getAllFilters();
     }
 
@@ -66,12 +57,12 @@ public class TwitterFetchController {
 
     @PostMapping("/delete_filter")
     Boolean removeFilter(@RequestBody SenderDeleteFilter data) {
-        return services.deleteFilter(data);
+        Boolean res = services.deleteFilter(data);
+        return res;
     }
 
     @PostMapping("capture_filter")
     Filter captureFilter(@RequestBody Filter filter) {
-        System.out.println(filter);
         return filter;
     }
 
