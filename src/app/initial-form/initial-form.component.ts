@@ -30,19 +30,24 @@ export class InitialFormComponent implements OnInit {
   }
 
   deleteExistingFilters(toDeleteFilters: Filter[]) {
-    let toDeleteIds: string[] = [];
-    
-    toDeleteFilters.forEach(filter => {
-      toDeleteIds.push(filter.id);
+    if (toDeleteFilters != null) {
+      let toDeleteIds: string[] = [];
       
-    });
-    
-    const senderDeleteFilter: SenderDeleteFilter = {
-      delete: {
-        ids: toDeleteIds
+      toDeleteFilters.forEach(filter => {
+        toDeleteIds.push(filter.id);
+        
+      });
+      
+      const senderDeleteFilter: SenderDeleteFilter = {
+        delete: {
+          ids: toDeleteIds
+        }
       }
+      this.http.post("/delete_filter", senderDeleteFilter).subscribe();
     }
-    this.http.post("/delete_filter", senderDeleteFilter).subscribe();
+    else {
+      console.log("Filters already empty");
+    }
   }
 
   addFollowerFilter(followerInput: string): void {
@@ -95,10 +100,15 @@ export class InitialFormComponent implements OnInit {
   }
 
   submitForm(): void {
-    const addFilters: SenderAddFilter = {
-      add: this.filters
+    if (this.filters != null && this.filters.length > 0) {
+      const addFilters: SenderAddFilter = {
+        add: this.filters
+      }
+      this.http.post("/add_filter", addFilters).subscribe();
+      this.router.navigate(['/start']);
     }
-    this.http.post("/add_filter", addFilters).subscribe();
-    this.router.navigate(['/start']);
+    else {
+      console.log("No filters ... can't show tweets");
+    }
   }
 }
