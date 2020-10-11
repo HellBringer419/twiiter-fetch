@@ -101,10 +101,10 @@ export class InitialFormComponent implements OnInit {
 
   submitForm(): void {
     if (this.filters != null && this.filters.length > 0) {
-      const addFilters: SenderAddFilter = {
+      const senderAddFilter: SenderAddFilter = {
         add: this.filters
       }
-      this.http.post("/add_filter", addFilters).subscribe();
+      this.http.post("/add_filter", senderAddFilter).subscribe();
       this.router.navigate(['/start']);
     }
     else {

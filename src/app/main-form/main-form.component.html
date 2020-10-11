@@ -1,20 +1,18 @@
 <h2> Add more filters </h2>
 <div class="row  justify-content-md-center">
-    <input type="text" name="new-filter" placeholder="Add Filter Keyword" class="col" />
+    <input type="text" name="new-filter" [(ngModel)]="filterText" placeholder="Your filter goes here" class="col" />
     <!-- <div class="col-md-auto"> -->
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                Dropdown button
+                Type of Filter
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-            </div>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li class="dropdown-item" *ngFor="let type of filterTypes" (click)="selectType(type)"> {{type}} </li>
+            </ul>
         </div>
     <div class="col col-lg-2">
-        <button type="button" class="btn btn-primary"> Add this </button>
+        <button type="button" class="btn btn-primary" (click)="addFilter(filterText, filterType)"> Add this </button>
     </div>
 </div>
 <br />
