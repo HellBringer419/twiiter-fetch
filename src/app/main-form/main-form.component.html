@@ -18,6 +18,13 @@
 <br />
 <br />
 <h3> Tweets Matching Filters </h3>
+<ul>
+    <li *ngFor="let filter of filters">
+        <span> {{filter?.value}} </span>
+        <span> {{filter?.tag}} </span>
+        <span> {{filter?.id}} </span>
+    </li>
+</ul>
 <br />
 <ul>
     <li *ngFor="let tweet of tweets">

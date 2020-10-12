@@ -43,7 +43,7 @@ export class InitialFormComponent implements OnInit {
           ids: toDeleteIds
         }
       }
-      this.http.post("/delete_filter", senderDeleteFilter).subscribe();
+      this.http.post("/delete_filter", senderDeleteFilter).subscribe(() => console.log("deleted filters on page 1 onInit") );
     }
     else {
       console.log("Filters already empty");
@@ -104,8 +104,10 @@ export class InitialFormComponent implements OnInit {
       const senderAddFilter: SenderAddFilter = {
         add: this.filters
       }
-      this.http.post("/add_filter", senderAddFilter).subscribe();
-      this.router.navigate(['/start']);
+      this.http.post("/add_filter", senderAddFilter).subscribe(() => {
+        console.log("added filters of pg 1")
+        this.router.navigate(['/start']);
+      });
     }
     else {
       console.log("No filters ... can't show tweets");
