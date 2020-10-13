@@ -5,7 +5,7 @@
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                Type of Filter
+                {{ filterType }}
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <li class="dropdown-item" *ngFor="let type of filterTypes" (click)="selectType(type)"> {{type}} </li>
@@ -18,13 +18,33 @@
 <br />
 <br />
 <h3> Tweets Matching Filters </h3>
-<ul>
+<div class="row">
+    <div class="col-sm-4">
+        Filters
+        <hr />
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let filter of filters">
+                <div class="row">
+                    <span class="col-11"> {{filter?.value}} </span>
+                    <button type="button" class="close" aria-label="Close" (click)="removeFilter(filter)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="col-sm-8">
+        Tweets should show
+    </div>
+</div>
+<!-- <ul>
     <li *ngFor="let filter of filters">
         <span> {{filter?.value}} </span>
         <span> {{filter?.tag}} </span>
         <span> {{filter?.id}} </span>
     </li>
-</ul>
+</ul> -->
 <br />
 <ul>
     <li *ngFor="let tweet of tweets">

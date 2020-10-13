@@ -69,11 +69,9 @@
                 <li class="list-group-item" *ngFor="let filter of hashtagFilters">
                     <div class="row">
                         <span class="col-11"> {{filter.value}} </span>
-                        <div class="col-1">
-                            <button type="button" class="close" aria-label="Close" (click)="removeFilter(filter)">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
+                        <button type="button" class="close" aria-label="Close" (click)="removeFilter(filter)">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                 </li>
             </ul>
