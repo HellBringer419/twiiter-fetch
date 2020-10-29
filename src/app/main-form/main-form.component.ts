@@ -1,10 +1,13 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { pipe, of } from 'rxjs';
+import { concatMap, map, switchAll, switchMap } from 'rxjs/operators';
 
-import { Tweet } from '../tweet';
+import { Tweet } from '../tweet_json/tweet';
 import { Filter } from '../filter-json/filter';
 import { SenderAddFilter } from '../filter-json/sender-add-filter';
 import { SenderDeleteFilter } from '../filter-json/sender-delete-filter';
+import { TWEETS } from '../mock-tweets';
 
 @Component({
   selector: 'app-main-form',
@@ -26,10 +29,15 @@ export class MainFormComponent implements OnInit {
   tempFilterIds: Set<string> = new Set<string>();
 
   constructor(private http: HttpClient, private zone: NgZone) {
-    // http.get("/tweets").subscribe(response => this.tweets.push(response['data']));
+  }
+  
+  ngOnInit(): void {
+    this.initializeFilters();
+
+    this.initializeTweets(20);
   }
 
-  ngOnInit(): void {
+  initializeFilters(): void {
     this.http.get<Filter[]>("/filters").subscribe((filters: Filter[]) => {
       if (filters != null) {
         this.zone.run(() => this.filters = filters);
@@ -44,6 +52,52 @@ export class MainFormComponent implements OnInit {
     },
       (error) => console.log(error)
     );
+  }
+
+  // TODO: add pagination: https://stackoverflow.com/a/58967883/9274057
+  initializeTweets(numberOfCallsLeft: number): void {
+    // this.tweets = TWEETS;
+
+    // Recursive method and this DOES work amazingly fast
+    if (numberOfCallsLeft < 1) {
+      return;
+    }
+    else {
+      this.http.get<Tweet>("/tweets").subscribe((tweet: Tweet) => {
+        tweet.created_at = new Date(tweet.created_at);
+        
+        this.tweets = [...this.tweets, tweet];
+        return this.initializeTweets(numberOfCallsLeft - 1);
+      });
+    }
+
+    // const arr: { url: string }[] = [{ url: "/tweets" }, { url: "/tweets" }];
+    // console.log("working on getting the tweets");
+
+    // // TODO: Get more than one tweet
+    // of(arr).pipe(switchMap(e => this.http.get<Tweet>(e[0].url))).subscribe((tweet: Tweet) => {
+    //   this.tweets = [...this.tweets, tweet];
+    //   console.log("must have got tweet, tweets right now");
+    //   // console.log(JSON.stringify(this.tweets, null, 4));
+    //   console.log(tweet);
+      
+    // });
+
+    //   of(arr).pipe(
+    //    concatMap(r=> http.get(r.url)), //MAKE EACH REQUEST AND WAIT FOR COMPLETION
+    //    toArray(), // COMBINE THEM TO ONE ARRAY
+    //    switchMapTo(http.get("FINALURL") // MAKE REQUEST AFTER EVERY THING IS FINISHED
+    // )).subscribe()
+
+    // http.get<Tweet>("/tweets").pipe<Tweet>(
+      //   // TODO: check an RxJs operator to use at : https://angular.io/guide/rx-library
+      //   map(tweet => tweet)
+    // ).subscribe(response => this.tweets.push(response['data']));
+
+    // Help for pagination .. more at: https://stackoverflow.com/questions/55266191/angular-repeating-the-same-subscribe-http-request
+    // fromEvent(this.buttonRef.nativeElement, 'click')
+    //   .pipe(switchMap(() => this.http.get('whatever page number'))
+    //     .subscribe(console.log));
   }
 
   selectType(filterType: string): void {
@@ -97,6 +151,7 @@ export class MainFormComponent implements OnInit {
             console.log("added filters to ngModel on page 2, Showing filters array: ");
             console.log(this.filters);
             
+            this.initializeTweets(20);
           }
         }
       }
@@ -104,11 +159,10 @@ export class MainFormComponent implements OnInit {
         console.log("null filters");
       }
     },
-    (error) => console.log(error)
+      (error) => console.log(error)
     );
   }
 
-  // TODO: delete selected filters
   removeFilter(toDeleteFilter: Filter): void {
     const senderDeleteFilter: SenderDeleteFilter = {
       delete: {
@@ -122,6 +176,8 @@ export class MainFormComponent implements OnInit {
       console.log(deletedFilters);
       console.log("showing filters array: ");
       console.log(this.filters);
+
+      this.initializeTweets(20);
     });
   }
 }

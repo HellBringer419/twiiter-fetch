@@ -6,11 +6,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collections;
 
-import com.app.twitter_fetch.model.Tweet;
 import com.app.twitter_fetch.model.filter_json.Filter;
 import com.app.twitter_fetch.model.filter_json.FilterData;
 import com.app.twitter_fetch.model.filter_json.SenderAddFilter;
 import com.app.twitter_fetch.model.filter_json.SenderDeleteFilter;
+import com.app.twitter_fetch.model.tweet_json.Tweet;
+import com.app.twitter_fetch.model.tweet_json.TweetData;
+
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,7 +28,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class TwitterFetchServices {
     InputStream inputStream;
-    MappingIterator<Tweet> tweetIterator = null;
+    MappingIterator<TweetData> tweetIterator = null;
     Boolean isOpen;
 
     public Tweet getTestTweet() {
@@ -42,8 +44,8 @@ public class TwitterFetchServices {
             RestTemplate restTemplate = new RestTemplate();
 
             String url = "https://api.twitter.com/2/tweets/20";
-            ResponseEntity<Tweet> response = restTemplate.exchange(url, HttpMethod.GET, entity, Tweet.class, 1);
-            return response.getBody();
+            ResponseEntity<TweetData> response = restTemplate.exchange(url, HttpMethod.GET, entity, TweetData.class, 1);
+            return response.getBody().getData();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,9 +79,9 @@ public class TwitterFetchServices {
         return null;
     }
 
-    public MappingIterator<Tweet> getIteratorForTweetsMatchingFilters() {
+    public MappingIterator<TweetData> getIteratorForTweetsMatchingFilters() {
         try {
-            URLConnection connection = new URL("https://api.twitter.com/2/tweets/search/stream").openConnection();
+            URLConnection connection = new URL("https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at").openConnection();
             connection.setRequestProperty("Authorization", APIHelper.getBearerToken());
             connection.setDoOutput(true);
             inputStream = connection.getInputStream();
@@ -87,7 +89,7 @@ public class TwitterFetchServices {
 
             isOpen = true;
 
-            tweetIterator = mapper.readerFor(Tweet.class).readValues(inputStream);
+            tweetIterator = mapper.readerFor(TweetData.class).readValues(inputStream);
             // while (isOpen && i.hasNextValue()) {
             //     Tweet tweet = i.nextValue();
             //     // CAREFUL ... tweets.add(tweet);
@@ -100,13 +102,44 @@ public class TwitterFetchServices {
         return tweetIterator;
     }
 
-    public void stopTweets() {
-        isOpen = false;
+    public Tweet getTweetForMatchingFilter() {
+        if (tweetIterator == null) {
+            tweetIterator = getIteratorForTweetsMatchingFilters();
+            System.out.println("iterator was null, initialized it");
+        }
+        Tweet tweet = null;
         try {
-            tweetIterator.close();
-            inputStream.close();
-        } catch (IOException e) {
+            tweet = tweetIterator.nextValue().getData();
+
+            // TODO: save this tweet in db for later retrieval
+
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+        System.out.println("Returning this tweet: " + tweet.toString());
+        return tweet;
+    }
+
+    public Tweet[] getTweetFromDB(Integer numberOfTweets) {
+        // TODO: Complete DAO
+        Tweet[] tweets = new Tweet[20];
+        return tweets;
+    }
+
+    public Boolean stopTweets() {
+        if (tweetIterator != null) {
+            isOpen = false;
+            try {
+                tweetIterator.close();
+                inputStream.close();
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        else {
+            return false;
         }
 	}
 

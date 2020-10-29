@@ -1,20 +1,20 @@
-package com.app.twitter_fetch.model;
+package com.app.twitter_fetch.model.tweet_json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Tweet {
-    private TweetData data;
+public class TweetData {
+    private Tweet data;
 
-    public Tweet() {
+    public TweetData() {
         super();
     }
 
-    public TweetData getData() {
+    public Tweet getData() {
         return data;
     }
 
-    public void setData(TweetData data) {
+    public void setData(Tweet data) {
         this.data = data;
     }
 

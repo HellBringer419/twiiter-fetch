@@ -2,15 +2,15 @@
 <div class="row  justify-content-md-center">
     <input type="text" name="new-filter" [(ngModel)]="filterText" placeholder="Your filter goes here" class="col" />
     <!-- <div class="col-md-auto"> -->
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                {{ filterType }}
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <li class="dropdown-item" *ngFor="let type of filterTypes" (click)="selectType(type)"> {{type}} </li>
-            </ul>
-        </div>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            {{ filterType }}
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li class="dropdown-item" *ngFor="let type of filterTypes" (click)="selectType(type)"> {{type}} </li>
+        </ul>
+    </div>
     <div class="col col-lg-2">
         <button type="button" class="btn btn-primary" (click)="addFilter(filterText, filterType)"> Add this </button>
     </div>
@@ -20,7 +20,7 @@
 <h3> Tweets Matching Filters </h3>
 <div class="row">
     <div class="col-sm-4">
-        Filters
+        Filters :
         <hr />
         <ul class="list-group">
             <li class="list-group-item" *ngFor="let filter of filters">
@@ -35,19 +35,41 @@
     </div>
 
     <div class="col-sm-8">
-        Tweets should show
+        Tweets :
+        <hr />
+        <ul class="list-group">
+            <div *ngFor="let tweet of tweets" class="md-1">
+                <li href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1"> ID: {{tweet?.id}} </h5>
+                        <small class="text-muted"> {{tweet?.created_at.toDateString()}} </small>
+                    </div>
+                    <p class="mb-1"> {{tweet?.text}} </p>
+                    <small class="text-muted"> {{tweet?.created_at.toLocaleTimeString()}} </small>
+
+                </li>
+
+                <br />
+            </div>
+        </ul>
+         
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item active">
+                    <a class="page-link" href="#">
+                        2
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
-<!-- <ul>
-    <li *ngFor="let filter of filters">
-        <span> {{filter?.value}} </span>
-        <span> {{filter?.tag}} </span>
-        <span> {{filter?.id}} </span>
-    </li>
-</ul> -->
-<br />
-<ul>
-    <li *ngFor="let tweet of tweets">
-        <span> {{tweet.text}} </span>
-    </li>
-</ul>

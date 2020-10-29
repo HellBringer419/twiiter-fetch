@@ -100,13 +100,15 @@ export class InitialFormComponent implements OnInit {
   }
 
   submitForm(): void {
+    
+    // uncomment before pushing
     if (this.filters != null && this.filters.length > 0) {
       const senderAddFilter: SenderAddFilter = {
         add: this.filters
       }
       this.http.post("/add_filter", senderAddFilter).subscribe(() => {
-        console.log("added filters of pg 1")
         this.router.navigate(['/start']);
+        console.log("added filters of pg 1")
       });
     }
     else {
