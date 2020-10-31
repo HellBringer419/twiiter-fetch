@@ -33,10 +33,7 @@ export class InitialFormComponent implements OnInit {
     if (toDeleteFilters != null) {
       let toDeleteIds: string[] = [];
       
-      toDeleteFilters.forEach(filter => {
-        toDeleteIds.push(filter.id);
-        
-      });
+      toDeleteFilters.forEach(filter => toDeleteIds.push(filter.id));
       
       const senderDeleteFilter: SenderDeleteFilter = {
         delete: {
@@ -100,15 +97,13 @@ export class InitialFormComponent implements OnInit {
   }
 
   submitForm(): void {
-    
-    // uncomment before pushing
     if (this.filters != null && this.filters.length > 0) {
       const senderAddFilter: SenderAddFilter = {
         add: this.filters
       }
       this.http.post("/add_filter", senderAddFilter).subscribe(() => {
-        this.router.navigate(['/start']);
         console.log("added filters of pg 1")
+        this.router.navigate(['/start']);
       });
     }
     else {

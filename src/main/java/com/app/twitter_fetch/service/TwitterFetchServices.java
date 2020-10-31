@@ -27,9 +27,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class TwitterFetchServices {
-    InputStream inputStream;
-    MappingIterator<TweetData> tweetIterator = null;
-    Boolean isOpen;
+    private InputStream inputStream = null;
+    private MappingIterator<TweetData> tweetIterator = null;
+    private Boolean isOpen = false;
 
     public Tweet getTestTweet() {
         Tweet tweet = null;
@@ -84,40 +84,39 @@ public class TwitterFetchServices {
             URLConnection connection = new URL("https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at").openConnection();
             connection.setRequestProperty("Authorization", APIHelper.getBearerToken());
             connection.setDoOutput(true);
-            inputStream = connection.getInputStream();
-            ObjectMapper mapper = new ObjectMapper();
 
-            isOpen = true;
-
-            tweetIterator = mapper.readerFor(TweetData.class).readValues(inputStream);
-            // while (isOpen && i.hasNextValue()) {
-            //     Tweet tweet = i.nextValue();
-            //     // CAREFUL ... tweets.add(tweet);
-            // }
-
-            return tweetIterator;
+            connection.connect();
+            if(this.inputStream == null) {
+                this.inputStream = connection.getInputStream();
+                ObjectMapper mapper = new ObjectMapper();
+    
+                isOpen = true;
+    
+                this.tweetIterator = mapper.readerFor(TweetData.class).readValues(inputStream);
+            }
+            
+            return this.tweetIterator;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return tweetIterator;
+        return null;
     }
 
     public Tweet getTweetForMatchingFilter() {
-        if (tweetIterator == null) {
-            tweetIterator = getIteratorForTweetsMatchingFilters();
-            System.out.println("iterator was null, initialized it");
+        if (this.tweetIterator == null) {
+            this.tweetIterator = getIteratorForTweetsMatchingFilters();
         }
         Tweet tweet = null;
         try {
-            tweet = tweetIterator.nextValue().getData();
+            tweet = this.tweetIterator.nextValue().getData();
+            return tweet;
 
-            // TODO: save this tweet in db for later retrieval
+            // TODO: save this tweet in db
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("Returning this tweet: " + tweet.toString());
-        return tweet;
+        return null;
     }
 
     public Tweet[] getTweetFromDB(Integer numberOfTweets) {
@@ -127,11 +126,14 @@ public class TwitterFetchServices {
     }
 
     public Boolean stopTweets() {
-        if (tweetIterator != null) {
-            isOpen = false;
+        if (this.tweetIterator != null) {
+            this.isOpen = false;
             try {
-                tweetIterator.close();
-                inputStream.close();
+                this.tweetIterator.close();
+                this.inputStream.close();
+
+                this.tweetIterator = null;
+                this.inputStream = null;
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -159,7 +161,6 @@ public class TwitterFetchServices {
             String url = "https://api.twitter.com/2/tweets/search/stream/rules";
             ResponseEntity<FilterData> response = restTemplate.exchange(url, HttpMethod.POST, entity, FilterData.class, 1);
             if (response.getStatusCode() == HttpStatus.CREATED) {
-                System.out.println(response.getBody());
                 return true;
             } else {
                 return false;
@@ -183,8 +184,7 @@ public class TwitterFetchServices {
             RestTemplate restTemplate = new RestTemplate();
 
             String url = "https://api.twitter.com/2/tweets/search/stream/rules";
-            ResponseEntity<FilterData> response = restTemplate.exchange(url, HttpMethod.POST, entity, FilterData.class,
-                    1);
+            ResponseEntity<FilterData> response = restTemplate.exchange(url, HttpMethod.POST, entity, FilterData.class, 1);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return true;
             } else {

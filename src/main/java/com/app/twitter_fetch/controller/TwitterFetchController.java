@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,17 +25,11 @@ public class TwitterFetchController {
         return services.getTweetForMatchingFilter();
     }
 
-    // @GetMapping("/get_old_tweets/${numberOfTweets}")
-    // Tweet[] getTweetFromDB(@RequestParam Integer numberOfTweets) {
-    //     return services.getTweetFromDB(numberOfTweets);
-    // }
-
     // closes the connection started by /tweets
     @GetMapping("/stop_tweets")
     Boolean stopTweets() {
         return services.stopTweets();
     }
-    
     
     // Create (add) filter
     @PostMapping("/add_filter")
@@ -63,11 +56,4 @@ public class TwitterFetchController {
     Tweet check() {
         return services.getTestTweet();
     }
-    
-    // Only for testing connection
-    @PostMapping("capture_filter")
-    Filter captureFilter(@RequestBody Filter filter) {
-        return filter;
-    }
-    
 }

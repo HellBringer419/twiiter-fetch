@@ -1,13 +1,10 @@
 import { Component, OnInit, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { pipe, of } from 'rxjs';
-import { concatMap, map, switchAll, switchMap } from 'rxjs/operators';
 
 import { Tweet } from '../tweet_json/tweet';
 import { Filter } from '../filter-json/filter';
 import { SenderAddFilter } from '../filter-json/sender-add-filter';
 import { SenderDeleteFilter } from '../filter-json/sender-delete-filter';
-import { TWEETS } from '../mock-tweets';
 
 @Component({
   selector: 'app-main-form',
@@ -28,13 +25,15 @@ export class MainFormComponent implements OnInit {
   filters: Filter[];
   tempFilterIds: Set<string> = new Set<string>();
 
+  currentPage: number = 1;
+
   constructor(private http: HttpClient, private zone: NgZone) {
   }
   
   ngOnInit(): void {
     this.initializeFilters();
 
-    this.initializeTweets(20);
+    this.initializeTweets(100);
   }
 
   initializeFilters(): void {
@@ -50,54 +49,32 @@ export class MainFormComponent implements OnInit {
         console.log("null filters");
       }
     },
-      (error) => console.log(error)
+      (error) => console.log(error + "\n at initializeFilters(): main-form ")
     );
   }
 
-  // TODO: add pagination: https://stackoverflow.com/a/58967883/9274057
+  // Recursive method and this DOES work amazingly fast
   initializeTweets(numberOfCallsLeft: number): void {
-    // this.tweets = TWEETS;
-
-    // Recursive method and this DOES work amazingly fast
     if (numberOfCallsLeft < 1) {
+      console.log("initialized all tweets");
+      
       return;
     }
     else {
       this.http.get<Tweet>("/tweets").subscribe((tweet: Tweet) => {
-        tweet.created_at = new Date(tweet.created_at);
-        
-        this.tweets = [...this.tweets, tweet];
-        return this.initializeTweets(numberOfCallsLeft - 1);
-      });
+        if (tweet != null) {
+          tweet.created_at = new Date(tweet.created_at);
+          
+          this.tweets = [...this.tweets, tweet];
+          return this.initializeTweets(numberOfCallsLeft - 1);
+        }
+        else {
+          console.log("tweet hasn't arrived yet");
+        }
+      },
+        (error) => console.log("error at initializeTweets(): main-form ")
+      );
     }
-
-    // const arr: { url: string }[] = [{ url: "/tweets" }, { url: "/tweets" }];
-    // console.log("working on getting the tweets");
-
-    // // TODO: Get more than one tweet
-    // of(arr).pipe(switchMap(e => this.http.get<Tweet>(e[0].url))).subscribe((tweet: Tweet) => {
-    //   this.tweets = [...this.tweets, tweet];
-    //   console.log("must have got tweet, tweets right now");
-    //   // console.log(JSON.stringify(this.tweets, null, 4));
-    //   console.log(tweet);
-      
-    // });
-
-    //   of(arr).pipe(
-    //    concatMap(r=> http.get(r.url)), //MAKE EACH REQUEST AND WAIT FOR COMPLETION
-    //    toArray(), // COMBINE THEM TO ONE ARRAY
-    //    switchMapTo(http.get("FINALURL") // MAKE REQUEST AFTER EVERY THING IS FINISHED
-    // )).subscribe()
-
-    // http.get<Tweet>("/tweets").pipe<Tweet>(
-      //   // TODO: check an RxJs operator to use at : https://angular.io/guide/rx-library
-      //   map(tweet => tweet)
-    // ).subscribe(response => this.tweets.push(response['data']));
-
-    // Help for pagination .. more at: https://stackoverflow.com/questions/55266191/angular-repeating-the-same-subscribe-http-request
-    // fromEvent(this.buttonRef.nativeElement, 'click')
-    //   .pipe(switchMap(() => this.http.get('whatever page number'))
-    //     .subscribe(console.log));
   }
 
   selectType(filterType: string): void {
@@ -120,14 +97,14 @@ export class MainFormComponent implements OnInit {
       toAddFilter.value = "#" + filterText;
     }
     else {
-      // test this filter
+      console.log("Can't add filter without type");
+      return;
     }
 
     const senderAddFilter: SenderAddFilter = {
       add: [toAddFilter]
     }
     this.http.post("/add_filter", senderAddFilter).subscribe(() => {
-      console.log("added this new filter from subs");
 
       // filters stored in toAddFilter do not have ids, syncing this.filters with backend
       this.fetchNewFiltersAndAddThem();
@@ -138,20 +115,18 @@ export class MainFormComponent implements OnInit {
   }
 
   fetchNewFiltersAndAddThem(): void {
-    console.log("started setting filters");
     this.http.get<Filter[]>("/filters").subscribe((filters: Filter[]) => {
       if (filters != null) {
         for (let filter of filters) {
           if (!this.tempFilterIds.has(filter.id)) {
-            // this.zone.run(() => this.filters.push(filter));
-            // this.filters.push(filter);
+
+            // order of tweets: new at last
             this.filters = [...this.filters, filter]
 
             this.tempFilterIds.add(filter.id);
-            console.log("added filters to ngModel on page 2, Showing filters array: ");
-            console.log(this.filters);
+            console.log("added new filter from input");
             
-            this.initializeTweets(20);
+            this.stopAndReinitalizeTweets();
           }
         }
       }
@@ -159,7 +134,7 @@ export class MainFormComponent implements OnInit {
         console.log("null filters");
       }
     },
-      (error) => console.log(error)
+      (error) => console.log("error at fetchNewFiltersAndAddThem(): main-form ")
     );
   }
 
@@ -170,14 +145,29 @@ export class MainFormComponent implements OnInit {
       }
     }
     this.http.post("/delete_filter", senderDeleteFilter).subscribe(() => {
-      console.log("deleted filter on page 2 when requested");
       const deletedFilters = this.filters.splice(this.filters.indexOf(toDeleteFilter), 1);
-      console.log("these got deleted");
-      console.log(deletedFilters);
-      console.log("showing filters array: ");
-      console.log(this.filters);
+      console.log("deleted filter on page 2 when requested");
+      
+      this.stopAndReinitalizeTweets();
+    },
+      (error) => console.log("error at removeFilter(): main-form ")
+    );
+  }
+  
+  stopAndReinitalizeTweets(): void {
+    this.http.get("/stop_tweets").subscribe(() => {
+      console.log("trying to re-initialize tweets");
+      
+      this.clearExistingTweets();
+      
+      // Added a time-out to avoid reaching api rate limit (retries after 300ms)
+      setTimeout(() =>  this.initializeTweets(100), 300);
+    },
+      (error) => console.log("error at stopAndReinitalizeTweets(): main-form ")
+    );
+  }
 
-      this.initializeTweets(20);
-    });
+  clearExistingTweets(): void {
+    this.tweets = [];
   }
 }
