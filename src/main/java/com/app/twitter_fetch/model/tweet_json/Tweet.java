@@ -1,13 +1,26 @@
 package com.app.twitter_fetch.model.tweet_json;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.app.twitter_fetch.model.filter_json.Filter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity
+@Table(name="tweets")
 public class Tweet {
+    
+    @Id
     private Long id;
+    
+    @Column
     private String text;
+
+    @Column
     public String created_at;
 
     @JsonProperty("matching_rules")

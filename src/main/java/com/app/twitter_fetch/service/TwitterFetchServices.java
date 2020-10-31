@@ -12,10 +12,11 @@ import com.app.twitter_fetch.model.filter_json.SenderAddFilter;
 import com.app.twitter_fetch.model.filter_json.SenderDeleteFilter;
 import com.app.twitter_fetch.model.tweet_json.Tweet;
 import com.app.twitter_fetch.model.tweet_json.TweetData;
-
+import com.app.twitter_fetch.repository.TweetRepository;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,9 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class TwitterFetchServices {
+    @Autowired
+    TweetRepository tweetRepository = null;
+
     private InputStream inputStream = null;
     private MappingIterator<TweetData> tweetIterator = null;
     private Boolean isOpen = false;
@@ -109,20 +113,13 @@ public class TwitterFetchServices {
         Tweet tweet = null;
         try {
             tweet = this.tweetIterator.nextValue().getData();
+            
+            tweet = tweetRepository.save(tweet);
             return tweet;
-
-            // TODO: save this tweet in db
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public Tweet[] getTweetFromDB(Integer numberOfTweets) {
-        // TODO: Complete DAO
-        Tweet[] tweets = new Tweet[20];
-        return tweets;
     }
 
     public Boolean stopTweets() {

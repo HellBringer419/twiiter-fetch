@@ -161,7 +161,8 @@ export class MainFormComponent implements OnInit {
       this.clearExistingTweets();
       
       // Added a time-out to avoid reaching api rate limit (retries after 300ms)
-      setTimeout(() =>  this.initializeTweets(100), 300);
+      setTimeout(() => this.initializeTweets(100), 300);
+      this.currentPage = 1;
     },
       (error) => console.log("error at stopAndReinitalizeTweets(): main-form ")
     );
